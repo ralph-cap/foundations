@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, NavLink, Redirect, Switch } from 'react-router-dom';
 import styles from './App.module.scss';
-import { BooksService } from './book/services/BooksService';
 import { BookDetailsRoute } from './book/components/BookDetails/BookDetailsRoute';
+import { RemoteBooksService } from './book/services/RemoteBooksService';
 import { BookOverviewRoute } from './book/components/BookOverview/BookOverviewRoute';
 
-const bookService = new BooksService();
+const bookService = new RemoteBooksService();
 
 export const App = () => (
   <Router>
