@@ -5,6 +5,7 @@ import { BookDetailsRoute } from './BookDetailsRoute';
 import { Book, BookProperties } from '../../Book';
 import { mount } from 'enzyme';
 import { RouterInspector } from '../BookOverview/BookOverviewRoute.test';
+import { asyncTestFor } from './BookDetails.test';
 
 describe('BookDetailsRoute', () => {
   let findOneMockPromise: Promise<Book>;
@@ -85,7 +86,7 @@ describe('BookDetailsRoute', () => {
       wrapper.update();
       // then (AFTER resolving findOne())
       const label = wrapper.find('label[htmlFor="authors"]');
-      const authors = wrapper.find('input#authors');
+      const authors = wrapper.find('input[name="authors"]');
       expect(label).toHaveText('Authors:');
       expect(authors.prop('value')).toBe(book.authors);
     })
@@ -110,6 +111,15 @@ describe('BookDetailsRoute', () => {
 
   it('saves the edited book and redirects to /book-app/books upon form submit', () => {
     // given
+    const saveBookSpy = jest.fn((bookToSave: Book | BookProperties) => {
+      const id = (bookToSave as Book).id;
+      return Promise.resolve({...bookToSave, id: id || 1});
+    });
+    const saveBookAsyncTest = asyncTestFor(saveBookSpy);
+    const spiedBookServiceMock = {
+      save: saveBookAsyncTest.getFn(),
+      findOne: bookServiceMock.findOne
+    };
     jest.useFakeTimers();
     expect.hasAssertions();
     const routeInspector = new RouterInspector();
@@ -117,7 +127,7 @@ describe('BookDetailsRoute', () => {
     const wrapper = mount((
       <MemoryRouter initialEntries={["/book-app/book/1"]}>
         <RoutedAssert>
-          <BookDetailsRoute bookService={bookServiceMock}/>
+          <BookDetailsRoute bookService={spiedBookServiceMock}/>
         </RoutedAssert>
       </MemoryRouter>
     ));
@@ -128,11 +138,10 @@ describe('BookDetailsRoute', () => {
       // when
       form.simulate('submit', {preventDefault: jest.fn()});
       // then
-      return saveMockPromise.then((savedBook) => {
-        expect(savedBook.id).toBe(editedBook.id);
+      return saveBookAsyncTest.afterFnHaveBeenCalled().then(() => {
+        expect(saveBookSpy).toBeCalledWith(editedBook);
         expect(routeInspector.currentLocationToBe('/book-app/books')).toBeTruthy();
       });
     });
   });
-
 });

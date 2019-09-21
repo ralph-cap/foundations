@@ -24,7 +24,7 @@ export class BookOverview extends Component<Props, State> {
     if (this.props.onBookSelection) {
       this.props.onBookSelection(book);
     }
-  }
+  };
 
   render(): ReactNode {
     return (
