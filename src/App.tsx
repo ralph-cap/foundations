@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, NavLink, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, NavLink, Redirect, Route, Switch } from 'react-router-dom';
+import { BookOverviewContainer } from './book/components/BookOverview/BookOverviewContainer';
 import styles from './App.module.scss';
-import { BookDetailsRoute } from './book/components/BookDetails/BookDetailsRoute';
 import { RemoteBooksService } from './book/services/RemoteBooksService';
-import { BookOverviewRoute } from './book/components/BookOverview/BookOverviewRoute';
+import { BookDetailsContainer } from './book/components/BookDetails/BookDetailsContainer';
 
 const bookService = new RemoteBooksService();
 
@@ -22,9 +22,9 @@ export const App = () => (
       </nav>
       <Switch>
         <Redirect exact from="/" to="/book-app/books"/>
-        <BookOverviewRoute bookService={bookService}/>
+        <Route path="/book-app/book/:id?" component={BookDetailsContainer} />
+        <Route path="/book-app/books" component={BookOverviewContainer} />
       </Switch>
-      <BookDetailsRoute bookService={bookService}/>
     </div>
   </Router>
 );

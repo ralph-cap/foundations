@@ -1,4 +1,4 @@
-import { Book, BookProperties } from '../Book';
+import { Book } from '../Book';
 import { BooksService } from './BooksService';
 
 export class RemoteBooksService implements BooksService {
@@ -16,8 +16,8 @@ export class RemoteBooksService implements BooksService {
       .then(response => response.json());
   }
 
-  save(bookToSave: Book | BookProperties): Promise<Book> {
-    const updateExisting = (<Book>bookToSave).id != null;
+  save(bookToSave: Book): Promise<Book> {
+    const updateExisting = bookToSave.id || bookToSave.id;
 
     return fetch('/api/books', {
       method: updateExisting ? 'POST' : 'PUT',

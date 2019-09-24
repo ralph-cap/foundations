@@ -1,5 +1,5 @@
 import React from 'react';
-import { Book, BookProperties } from '../../Book';
+import { Book } from '../../Book';
 import styles from './BookDetails.module.scss'
 import { Field, FieldProps, Form, Formik } from 'formik';
 
@@ -19,14 +19,14 @@ function notEmptyAndMaxLengthOf(maxLength: number) {
 }
 
 export interface Props {
-  book: Book | BookProperties;
-  onBookChange?: (book: Book | BookProperties) => Promise<any>;
+  book: Book;
+  onBookChange?: (book: Book) => Promise<any>
 }
 
 export const BookDetails = (props: Props) => (
   <div className={`${styles.form} container`}>
     <Formik initialValues={props.book}
-            onSubmit={(values: Book | BookProperties, {setSubmitting}) => {
+            onSubmit={(values: Book, {setSubmitting}) => {
               if (props.onBookChange) {
                 props.onBookChange({...values}).then(() => setSubmitting(false));
               }
